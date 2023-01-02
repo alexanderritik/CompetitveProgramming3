@@ -1,0 +1,54 @@
+class Solution {
+public:
+
+    bool dfs(string st , string end,double &ans , double temp ,set<string> visited , unordered_map<string , vector<pair<string,double>>>& mp)
+    {
+        if(visited.find(st)!=visited.end())return false;
+
+        else if(st==end){
+            ans = temp;
+            cout<<"hit "<< temp<<endl;
+            return true;
+        }
+
+        else{
+            visited.insert(st);
+            
+            for(auto i:mp[st]){
+                if(dfs(i.first , end ,ans, temp * i.second , visited,mp))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+
+    vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+
+        unordered_map<string , vector<pair<string,double>>> mp;
+        for(int i=0;i<equations.size();i++)
+        {
+            mp[equations[i][0]].push_back({equations[i][1], values[i]});
+            mp[equations[i][1]].push_back({equations[i][0], 1/values[i]});
+        }
+        vector<double> ans;
+        for(int i=0;i<queries.size();i++){
+
+            string st = queries[i][0];
+            string end = queries[i][1];
+
+            if(mp.find(st)==mp.end()){
+                ans.push_back(-1.000);
+            }
+            else{
+                set<string> visited;
+                double temp = -1.00;
+                dfs(st,end,temp ,1.00 , visited , mp);
+                ans.push_back(temp);
+            }
+
+            
+        }
+        return ans;
+    }
+};
